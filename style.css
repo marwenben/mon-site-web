@@ -603,3 +603,28 @@ button:hover {
     transform: rotate(360deg);
     transition: transform 0.5s ease;
 }
+#ressources ul {
+    list-style: none;
+    padding: 0;
+}
+
+#ressources li {
+    margin-bottom: 10px;
+}
+
+#ressources a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+#ressources a:hover {
+    text-decoration: underline;
+}
+.certification-logo:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+}
+a:hover {
+    color: #ff6f61;
+    transition: color 0.3s ease;
+}
