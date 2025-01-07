@@ -423,3 +423,80 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #e65a50; /* Couleur de fond au survol */
 }
+/* Ajoutez ces médias queries à la fin de votre fichier CSS */
+
+/* Pour les écrans de petite taille (téléphones) */
+@media (max-width: 768px) {
+    body {
+        overflow: auto; /* Permettre le défilement sur mobile */
+    }
+
+    header {
+        padding: 10px;
+    }
+
+    nav ul {
+        flex-direction: column; /* Afficher les liens de navigation en colonne */
+        align-items: center;
+    }
+
+    nav ul li {
+        margin: 10px 0; /* Espacement entre les liens de navigation */
+    }
+
+    section {
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .service-item {
+        width: 100%; /* Les services prennent toute la largeur sur mobile */
+        margin: 10px 0;
+    }
+
+    .testimonial-item {
+        width: 100%; /* Les témoignages prennent toute la largeur sur mobile */
+        margin: 10px 0;
+    }
+
+    .profile-photo {
+        width: 100px; /* Réduire la taille de la photo de profil sur mobile */
+        height: 100px;
+    }
+
+    .company-logo, .certification-logo {
+        width: 40px; /* Réduire la taille des logos sur mobile */
+        height: 40px;
+    }
+
+    #home {
+        padding: 50px 10px; /* Réduire l'espacement dans la section d'accueil */
+    }
+
+    #home .hero h2 {
+        font-size: 2em; /* Réduire la taille du titre sur mobile */
+    }
+
+    #home .hero p {
+        font-size: 1em; /* Réduire la taille du texte sur mobile */
+    }
+
+    .cta-button {
+        font-size: 1em; /* Réduire la taille du bouton sur mobile */
+    }
+
+    footer {
+        padding: 10px; /* Réduire l'espacement dans le footer */
+    }
+}
+
+/* Pour les écrans de taille moyenne (tablettes) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .service-item {
+        width: 45%; /* Ajuster la largeur des services pour les tablettes */
+    }
+
+    .testimonial-item {
+        width: 45%; /* Ajuster la largeur des témoignages pour les tablettes */
+    }
+}        
