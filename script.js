@@ -115,3 +115,29 @@ form button:hover {
     margin-bottom: 10px;
     line-height: 1.6;
 }
+// Gestion des commentaires
+document.getElementById('comment-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Empêcher le rechargement de la page
+
+    // Récupérer les valeurs du formulaire
+    const name = document.getElementById('comment-name').value;
+    const email = document.getElementById('comment-email').value;
+    const comment = document.getElementById('comment-text').value;
+    const rating = document.getElementById('rating').value;
+
+    // Créer un nouvel élément de commentaire
+    const commentItem = document.createElement('div');
+    commentItem.classList.add('comment-item');
+
+    commentItem.innerHTML = `
+        <p><strong>${name}</strong> (${email})</p>
+        <p>${comment}</p>
+        <p class="rating">Note : ${rating} étoiles</p>
+    `;
+
+    // Ajouter le commentaire à la liste
+    document.getElementById('comment-list').appendChild(commentItem);
+
+    // Réinitialiser le formulaire
+    document.getElementById('comment-form').reset();
+});
