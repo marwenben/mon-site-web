@@ -184,5 +184,31 @@
         <p><strong>Téléphone :</strong> <a href="tel:+14385263603">+1 438 526 3603</a> | <strong>Email :</strong> <a href="mailto:marouenbenslimen88@gmail.com">marouenbenslimen88@gmail.com</a></p>
     </footer>
     <script src="script.js"></script>
+    <!-- Section Commentaires -->
+<section id="comments">
+    <h2>Laissez un commentaire</h2>
+    <form id="comment-form">
+        <label for="comment-name">Nom :</label>
+        <input type="text" id="comment-name" name="comment-name" required>
+        
+        <label for="comment-email">Email :</label>
+        <input type="email" id="comment-email" name="comment-email" required>
+        
+        <label for="comment-text">Commentaire :</label>
+        <textarea id="comment-text" name="comment-text" rows="4" required></textarea>
+        
+        <label for="rating">Note :</label>
+        <select id="rating" name="rating">
+            <option value="1">1 étoile</option>
+            <option value="2">2 étoiles</option>
+            <option value="3">3 étoiles</option>
+            <option value="4">4 étoiles</option>
+            <option value="5">5 étoiles</option>
+        </select>
+        
+        <button type="submit">Envoyer</button>
+    </form>
+    <div id="comment-list"></div>
+</section>
 </body>
 </html>
