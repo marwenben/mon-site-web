@@ -228,22 +228,28 @@
 
 <!-- ===== Chatbot IA (Marwen IT Help) ===== -->
 <div id="itbot-root" aria-live="polite">
+  <!-- Bouton flottant (visible quand la fenêtre est fermée) -->
   <button id="itbot-toggle" aria-haspopup="dialog" aria-controls="itbot-window" aria-label="Ouvrir le chatbot">
-    <i class="fas fa-comments"></i>
+    <i class="fa-solid fa-comments" aria-hidden="true"></i>
+    <span class="itbot-fallback" aria-hidden="true">💬</span>
   </button>
 
+  <!-- Fenêtre de chat -->
   <div id="itbot-window" role="dialog" aria-modal="false" aria-labelledby="itbot-title" hidden>
     <header class="itbot-header">
       <div>
         <strong id="itbot-title">Marwen – Aide IT (IA locale)</strong>
         <div class="itbot-subtitle">Wi-Fi, imprimantes, AD, VPN, Outlook, Teams…</div>
       </div>
-      <button id="itbot-close" aria-label="Fermer"><i class="fas fa-times"></i></button>
+      <button id="itbot-close" aria-label="Fermer (Échap)">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
     </header>
 
     <main id="itbot-messages" class="itbot-scroll" tabindex="0" aria-label="Fil des messages">
       <div class="itbot-msg itbot-bot">
-        👋 Bonjour ! Chargement du modèle IA la première fois (quelques centaines de Mo). Posez votre question, je réponds dès que je suis prêt.
+        👋 Bonjour ! Je charge le modèle IA la première fois (quelques centaines de Mo).
+        Pose ta question, je réponds dès que je suis prêt.
       </div>
     </main>
 
@@ -258,7 +264,9 @@
 
     <form id="itbot-form" autocomplete="off">
       <input id="itbot-input" type="text" placeholder="Écrivez votre question…" aria-label="Votre question" required />
-      <button type="submit" aria-label="Envoyer"><i class="fas fa-paper-plane"></i></button>
+      <button id="itbot-send" type="submit" aria-label="Envoyer">
+        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+      </button>
     </form>
 
     <footer class="itbot-footer">
@@ -268,22 +276,43 @@
 </div>
 
 <style>
+/* Positionnement + accessibilité */
 #itbot-root { position: fixed; bottom: 24px; right: 24px; z-index: 9999; font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",sans-serif; }
-#itbot-toggle { width:56px; height:56px; border-radius:50%; border:none; cursor:pointer; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,#2563eb,#0ea5e9); box-shadow:0 10px 20px rgba(0,0,0,.18); }
-#itbot-window { position: fixed; bottom:92px; right:24px; width:min(380px,92vw); max-height:min(70vh,760px); background:#fff; border-radius:16px; border:1px solid #e5e7eb; box-shadow:0 20px 50px rgba(0,0,0,.25); display:flex; flex-direction:column; overflow:hidden; }
+#itbot-root.open #itbot-toggle { display: none; }  /* cache le bouton quand la fenêtre est ouverte */
+
+#itbot-toggle {
+  width:56px; height:56px; border-radius:50%; border:none; cursor:pointer; display:grid; place-items:center;
+  color:#fff; background:linear-gradient(135deg,#2563eb,#0ea5e9); box-shadow:0 10px 20px rgba(0,0,0,.18);
+}
+#itbot-toggle i { font-size: 20px; }
+#itbot-toggle .itbot-fallback { font-size:22px; line-height:1; }
+
+#itbot-window {
+  position: fixed; bottom:92px; right:24px; width:min(380px,92vw); max-height:min(70vh,760px);
+  background:#fff; border-radius:16px; border:1px solid #e5e7eb; box-shadow:0 20px 50px rgba(0,0,0,.25);
+  display:flex; flex-direction:column; overflow:hidden;
+}
 .itbot-header { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:#0ea5e9; color:#fff; }
 .itbot-subtitle{ font-size:.85rem; opacity:.9; }
-#itbot-close { background:transparent; border:none; color:#fff; cursor:pointer; font-size:1.1rem; }
+#itbot-close { background:transparent; border:none; color:#fff; cursor:pointer; font-size:1.15rem; }
+
 #itbot-messages { padding:12px; gap:10px; display:flex; flex-direction:column; background:#f8fafc; overflow:auto; }
 .itbot-msg { max-width:88%; padding:10px 12px; border-radius:12px; line-height:1.35; font-size:.95rem; white-space:pre-wrap; }
-.itbot-bot { background:#e2f2ff; border:1px solid #bfdbfe; color:#0f172a; align-self:flex-start; }
+.itbot-bot  { background:#e2f2ff; border:1px solid #bfdbfe; color:#0f172a; align-self:flex-start; }
 .itbot-user { background:#e5e7eb; border:1px solid #d1d5db; color:#111827; align-self:flex-end; }
+.itbot-typing { opacity:.8; font-style:italic; }
+
 .itbot-suggestions { display:flex; flex-wrap:wrap; gap:8px; padding:8px 12px; background:#fff; border-top:1px solid #eef2f7; }
 .itbot-chip { border:1px solid #dbeafe; background:#f0f9ff; color:#0c4a6e; padding:6px 10px; border-radius:999px; cursor:pointer; font-size:.85rem; }
+
 #itbot-form { display:flex; gap:8px; padding:10px; background:#fff; border-top:1px solid #eef2f7; }
 #itbot-input { flex:1; padding:10px 12px; border-radius:10px; border:1px solid #cbd5e1; font-size:.95rem; }
-#itbot-form button { width:44px; border-radius:10px; border:1px solid #bae6fd; background:#e0f2fe; color:#075985; cursor:pointer; }
+#itbot-send { width:44px; border-radius:10px; border:1px solid #bae6fd; background:#e0f2fe; color:#075985; cursor:pointer; }
+#itbot-send[disabled] { opacity:.6; cursor:not-allowed; }
+
 .itbot-footer { padding:6px 12px 10px; background:#fff; border-top:1px solid #eef2f7; text-align:right; }
+.itbot-link { color:#0ea5e9; text-decoration: underline; }
+
 @media (prefers-reduced-motion:no-preference){
   #itbot-window{ animation: itbot-pop .18s ease-out; }
   @keyframes itbot-pop { from{ transform: translateY(8px); opacity:.0 } to{ transform: translateY(0); opacity:1 } }
@@ -292,17 +321,91 @@
 
 <script>
 (function(){
-  const el = { toggle:null, win:null, close:null, messages:null, form:null, input:null, chips:null };
-  let pipe=null, loading=false, ready=false;
+  const el = {
+    root:   document.getElementById('itbot-root'),
+    toggle: document.getElementById('itbot-toggle'),
+    win:    document.getElementById('itbot-window'),
+    close:  document.getElementById('itbot-close'),
+    messages: document.getElementById('itbot-messages'),
+    form:   document.getElementById('itbot-form'),
+    input:  document.getElementById('itbot-input'),
+    send:   document.getElementById('itbot-send'),
+    chips:  document.querySelectorAll('.itbot-chip'),
+  };
+
+  /* ==== ÉTAT IA ==== */
+  let pipe = null;
+  let loading = false;
+  let ready = false;
 
   const SYSTEM_PROMPT = `You are "Marwen IT Assistant", a concise and practical IT helpdesk chatbot.
-Answer in the user's language (FR if the user writes in French). Focus on Wi-Fi, printers, AD, VPN, Outlook/Teams, Windows.
-Give short, step-by-step fixes. Show commands in code blocks. Never ask for passwords.`;
+Answer in the user's language (French if the user writes in French). Topics: Wi-Fi, printers, AD, VPN, Outlook/Teams, Windows, RSAT.
+Give short, step-by-step guidance, commands in code blocks. Never ask for passwords. If unclear, ask one short question then give a first step.`;
 
+  // Mini FAQ de secours (si IA non prête)
+  const FALLBACK = [
+    { tags: /wifi|wi-?fi|internet|réseau|reseau/i,
+      ans: `💡 Wi-Fi (Windows)
+1) Win+A → Mode avion désactivé
+2) Paramètres > Réseau > Wi-Fi ON
+3) Oublier puis se reconnecter au SSID
+4) CMD (Admin):
+   netsh winsock reset
+   ipconfig /flushdns
+5) Redémarrer PC et routeur.` },
+    { tags: /imprim/i,
+      ans: `🖨️ Ajouter une imprimante
+Paramètres > Bluetooth et appareils > Imprimantes et scanners > Ajouter.
+Réseau : \\\\serveur\\NomImprimante ou IP (port TCP/IP).
+Installer le pilote constructeur si demandé.` },
+    { tags: /vpn|forti|anyconnect|globalprotect/i,
+      ans: `🌐 VPN
+- Vérifier identifiants + MFA
+- Horloge système correcte
+- Tester un autre réseau
+- Relancer l'app VPN / redémarrer` },
+    { tags: /outlook|courriel|mail/i,
+      ans: `📧 Outlook
+- Réparer Office (Panneau de config > Programmes > Office > Modifier > Réparer)
+- Nouveau profil (Panneau de config > Courrier > Profils)
+- Boîte partagée : Fichier > Comptes > Ajouter boîte partagée` },
+    { tags: /teams|cam(é|e)ra|micro/i,
+      ans: `🎥 Teams
+- Paramètres > Périphériques → choisir micro/caméra
+- Quitter complètement et relancer
+- Vider cache (Win+R): %appdata%\\Microsoft\\Teams\\Cache` },
+    { tags: /mot ?de ?passe|password|ad\b|active ?directory/i,
+      ans: `🔐 Mot de passe AD
+- Ctrl+Alt+Suppr > Modifier le mot de passe
+- Sinon: réinitialisation par l'admin (complexité)
+- Hors domaine : connecter le VPN pour valider` },
+  ];
+
+  /* ==== UI helpers ==== */
+  const open = () => {
+    el.win.hidden = false;
+    el.root.classList.add('open');
+    el.input.focus();
+    loadModel(); // charge l'IA au premier open
+  };
+  const close = () => {
+    el.win.hidden = true;
+    el.root.classList.remove('open');
+    el.toggle.focus();
+  };
+  const push = (text, who, extraClass='') => {
+    const d = document.createElement('div');
+    d.className = `itbot-msg itbot-${who} ${extraClass}`;
+    d.textContent = text;
+    el.messages.appendChild(d);
+    el.messages.scrollTop = el.messages.scrollHeight;
+    return d;
+  };
+
+  /* ==== IA ==== */
   async function loadModel(){
     if (loading || ready) return;
     loading = true;
-    push("⏳ Chargement du modèle IA… (une seule fois)", "bot");
     try {
       pipe = await window.transformers.pipeline(
         "text-generation",
@@ -311,68 +414,78 @@ Give short, step-by-step fixes. Show commands in code blocks. Never ask for pass
       );
       ready = true;
       push("✅ IA prête. Posez votre question IT.", "bot");
-    } catch(e){
-      console.error(e);
-      push("❌ Erreur de chargement du modèle. Réessayez ou contactez-moi.", "bot");
+    } catch (e){
+      console.error("Transformers load error:", e);
+      push("❌ Erreur de chargement du modèle. Je peux tout de même te guider avec des conseils de base.", "bot");
+    } finally {
+      loading = false;
     }
   }
 
-  async function askAI(text){
-    if (!pipe) await loadModel();
-    if (!ready) return "Le modèle se charge encore. Répétez dans quelques secondes.";
-    const prompt = `System: ${SYSTEM_PROMPT}\nUser: ${text}\nAssistant:`;
-    const out = await pipe(prompt, { max_new_tokens: 180, temperature: 0.2, top_p: 0.9, repetition_penalty: 1.05 });
-    const full = (Array.isArray(out)? out[0].generated_text : String(out));
-    return full.split("Assistant:").pop().trim();
+  async function aiAnswer(userText){
+    // garde UX fluide si IA pas prête
+    if (!pipe && !loading) loadModel();
+
+    // Si au bout de 20s pas prêt → fallback
+    const timeout = (ms) => new Promise(res => setTimeout(res, ms));
+    let waited = 0;
+    while(!ready && waited < 20000 && loading) { await timeout(250); waited += 250; }
+
+    if (!ready) {
+      // Réponse de secours
+      const hit = FALLBACK.find(f => f.tags.test(userText));
+      return hit ? hit.ans : `🤖 Je ne suis pas encore prêt. Essaie des mots-clés (Wi-Fi, imprimante, VPN, Outlook, Teams, AD).
+Sinon, utilise la section Contact et je te réponds rapidement.`;
+    }
+
+    // Génération IA
+    const prompt = `System: ${SYSTEM_PROMPT}\nUser: ${userText}\nAssistant:`;
+    try {
+      const out = await pipe(prompt, {
+        max_new_tokens: 180,
+        temperature: 0.2,
+        top_p: 0.9,
+        repetition_penalty: 1.05
+      });
+      const full = (Array.isArray(out)? out[0].generated_text : String(out));
+      return full.split("Assistant:").pop().trim();
+    } catch (e){
+      console.error("Generation error:", e);
+      return "⚠️ Une erreur est survenue pendant la génération. Réessaie ou précise ta question.";
+    }
   }
 
-  function init(){
-    el.toggle=document.getElementById('itbot-toggle');
-    el.win   =document.getElementById('itbot-window');
-    el.close =document.getElementById('itbot-close');
-    el.messages=document.getElementById('itbot-messages');
-    el.form  =document.getElementById('itbot-form');
-    el.input =document.getElementById('itbot-input');
-    el.chips =document.querySelectorAll('.itbot-chip');
+  /* ==== Events ==== */
+  el.toggle.addEventListener('click', open);
+  el.close.addEventListener('click', close);
+  document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape' && !el.win.hidden) close(); });
 
-    const open = ()=>{ el.win.hidden=false; el.messages.scrollTop=el.messages.scrollHeight; el.input.focus(); loadModel(); };
-    const close= ()=>{ el.win.hidden=true; el.toggle.focus(); };
+  el.form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const q = el.input.value.trim();
+    if(!q) return;
+    el.input.value = '';
+    el.send.disabled = true;
 
-    el.toggle.addEventListener('click', ()=> el.win.hidden ? open() : close());
-    el.close.addEventListener('click', close);
+    push(q, 'user');
+    const typing = push('…', 'bot', 'itbot-typing');
 
-    el.form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      const q = el.input.value.trim();
-      if(!q) return;
-      push(q, 'user');
-      el.input.value='';
-      const a = await askAI(q);
-      push(a, 'bot');
-    });
+    const a = await aiAnswer(q);
+    typing.remove();
+    push(a, 'bot');
+    el.send.disabled = false;
+  });
 
-    el.chips.forEach(ch => ch.addEventListener('click', async ()=>{
-      const q = ch.textContent.trim();
-      push(q,'user');
-      if (el.win.hidden) el.win.hidden=false;
-      const a = await askAI(q);
-      push(a,'bot');
-    }));
-  }
-
-  function push(text, who){
-    const d=document.createElement('div');
-    d.className=`itbot-msg itbot-${who}`;
-    d.textContent=text;
-    el.messages.appendChild(d);
-    el.messages.scrollTop=el.messages.scrollHeight;
-  }
-
-  if (document.readyState==="loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
+  el.chips.forEach(ch => ch.addEventListener('click', async ()=>{
+    const q = ch.textContent.trim();
+    open();
+    el.input.value = q;
+    el.form.requestSubmit();
+  }));
 })();
 </script>
 
 </body>
 </html>
+
 
