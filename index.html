@@ -338,7 +338,8 @@
     send:   document.getElementById('itbot-send'),
     chips:  document.querySelectorAll('.itbot-chip'),
   };
-  // ===== Base de connaissances locale (réponses instantanées) =====
+
+  /* ===== KB — Réponses instantanées ===== */
   const KB = [
     {
       re: /wifi|wi-?fi|internet|reseau|réseau|connexion|connecter/i,
@@ -347,7 +348,7 @@
 1) Win+A → **Mode avion OFF**
 2) Paramètres → **Réseau & Internet > Wi-Fi** → Wi-Fi **ON**
 3) **Oublier** le réseau puis se reconnecter
-4) Invite de commandes (Admin) :
+4) CMD (Admin) :
 netsh winsock reset
 ipconfig /flushdns
 ipconfig /release
@@ -440,34 +441,32 @@ net start bits`
 - Vider cache/cookies
 - Tester en **navigation privée**
 - Désactiver extensions suspectes`
-    }
-          {
+    },
+    {
       re: /dism|sfc|integrité|corruption|réparer windows|repair windows/i,
       ans:
 `🛠️ **Réparer l’image Windows (DISM + SFC)**
 1) Ouvrir **Invite de commandes (Admin)**
-2) Vérifier et réparer l’image :
+2) Vérifier / réparer l’image :
    dism /online /cleanup-image /scanhealth
    dism /online /cleanup-image /restorehealth
-3) Vérifier l’intégrité des fichiers système :
+3) Vérifier l’intégrité des fichiers :
    sfc /scannow
 4) Redémarrer le PC après la réparation`
-    }
+    },
     {
       re: /wlanreport|rapport wifi|wifi report|diagnostic wifi/i,
       ans:
-`📊 **Rapport détaillé Wi-Fi (Windows)**
-1) Ouvrir **Invite de commandes (Admin)**
-2) Lancer la commande :
+`📊 **Rapport détaillé Wi-Fi**
+1) CMD (Admin) :
    netsh wlan show wlanreport
-3) Le rapport HTML est généré ici :
+2) Ouvrir :
    C:\\ProgramData\\Microsoft\\Windows\\WlanReport\\wlan-report-latest.html
-4) Ouvrez ce fichier avec votre navigateur pour voir :
-   - Déconnexions / erreurs
-   - Historique des connexions
-   - Informations sur les adaptateurs`
+3) Le rapport montre :
+   déconnexions/erreurs, historique, adaptateurs`
     }
   ];
+
 
   // Renvoie une réponse immédiate si un motif de la KB matche
   function kbAnswer(q){
@@ -600,6 +599,7 @@ Réseau: \\\\serveur\\Nom ou IP (TCP/IP)`},
 
 </body>
 </html>
+
 
 
 
