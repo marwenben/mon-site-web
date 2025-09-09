@@ -628,3 +628,16 @@ a:hover {
     color: #ff6f61;
     transition: color 0.3s ease;
 }
+const open = () => {
+  el.win.hidden = false;
+  el.root.classList.add('open');   // ajoute la classe pour masquer le bouton
+  el.input.focus();
+  loadModel();
+};
+
+const close = () => {
+  el.win.hidden = true;
+  el.root.classList.remove('open');  // enlève la classe -> bouton réapparaît
+  el.toggle.focus();
+};
+
