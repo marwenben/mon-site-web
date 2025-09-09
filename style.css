@@ -640,4 +640,11 @@ const close = () => {
   el.root.classList.remove('open');  // enlève la classe -> bouton réapparaît
   el.toggle.focus();
 };
+/* Chatbot: bouton caché quand la fenêtre est ouverte */
+#itbot-root.open #itbot-toggle { display: none; }
+
+/* (optionnel) Ajuste l'icône / fallback emoji du bouton */
+#itbot-toggle i { font-size: 20px; }
+#itbot-toggle .itbot-fallback { font-size: 22px; line-height: 1; }
+
 
