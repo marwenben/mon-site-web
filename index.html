@@ -484,8 +484,130 @@ Sinon, utilise la section Contact et je te réponds rapidement.`;
   }));
 })();
 </script>
+<script>
+(function(){
+  const el = {
+    root:   document.getElementById('itbot-root'),
+    toggle: document.getElementById('itbot-toggle'),
+    win:    document.getElementById('itbot-window'),
+    close:  document.getElementById('itbot-close'),
+    messages: document.getElementById('itbot-messages'),
+    form:   document.getElementById('itbot-form'),
+    input:  document.getElementById('itbot-input'),
+    send:   document.getElementById('itbot-send'),
+    chips:  document.querySelectorAll('.itbot-chip'),
+  };
+
+  // ---- état IA ----
+  let pipe=null, loading=false, ready=false;
+
+  const SYSTEM_PROMPT = `You are "Marwen IT Assistant", a concise and practical IT helpdesk chatbot.
+Answer in the user's language (French if the user writes in French). Topics: Wi-Fi, printers, AD, VPN, Outlook/Teams, Windows.
+Give short, step-by-step guidance, commands in code blocks. Never ask for passwords.`;
+
+  // Fallback simple si le modèle n'est pas prêt
+  const FALLBACK = [
+    { re:/wifi|wi-?fi|internet|réseau|reseau/i, ans:`💡 Wi-Fi (Windows)\n1) Win+A Mode avion OFF\n2) Paramètres > Réseau > Wi-Fi ON\n3) Oublier puis reconnecter\n4) CMD (Admin):\n   netsh winsock reset\n   ipconfig /flushdns\n5) Redémarrer PC + routeur`},
+    { re:/imprim/i,  ans:`🖨️ Ajouter une imprimante\nParamètres > Bluetooth et appareils > Imprimantes et scanners > Ajouter.\nRéseau: \\\\serveur\\Nom ou IP (TCP/IP)`},
+    { re:/vpn|forti|anyconnect|globalprotect/i, ans:`🌐 VPN\n- Vérifier identifiants + MFA\n- Horloge système OK\n- Tester un autre réseau\n- Relancer l'app / redémarrer`},
+  ];
+
+  // ---- helpers UI ----
+  const push = (text, who, cls='')=>{
+    const d=document.createElement('div');
+    d.className=`itbot-msg itbot-${who} ${cls}`;
+    d.textContent=text;
+    el.messages.appendChild(d);
+    el.messages.scrollTop = el.messages.scrollHeight;
+    return d;
+  };
+
+  const open = ()=>{
+    el.win.hidden = false;
+    el.root.classList.add('open');      // masque le bouton
+    el.input.focus();
+    loadModel();
+  };
+
+  const close = ()=>{
+    el.win.hidden = true;
+    el.root.classList.remove('open');   // ré-affiche le bouton
+    el.toggle.focus();
+  };
+
+  // ---- IA ----
+  async function loadModel(){
+    if (loading || ready) return;
+    loading = true;
+    try {
+      pipe = await window.transformers.pipeline(
+        "text-generation",
+        "Xenova/Qwen2.5-0.5B-Instruct",
+        { quantized: true }
+      );
+      ready = true;
+      push("✅ IA prête. Posez votre question IT.", "bot");
+    } catch(e){
+      console.error(e);
+      push("❌ Erreur de chargement du modèle. Je peux te répondre avec des conseils de base.", "bot");
+    } finally {
+      loading = false;
+    }
+  }
+
+  async function aiAnswer(q){
+    if (!pipe && !loading) loadModel();
+
+    // patiente max ~20s sinon fallback
+    const wait = ms => new Promise(r=>setTimeout(r,ms));
+    let waited=0;
+    while(!ready && loading && waited<20000){ await wait(250); waited+=250; }
+
+    if (!ready){
+      const hit = FALLBACK.find(f=>f.re.test(q));
+      return hit ? hit.ans : "Je ne suis pas encore prêt. Essaie un mot-clé (Wi-Fi, imprimante, VPN, Outlook, AD) ou contacte-moi.";
+    }
+
+    const prompt = `System: ${SYSTEM_PROMPT}\nUser: ${q}\nAssistant:`;
+    try {
+      const out = await pipe(prompt, { max_new_tokens:180, temperature:0.2, top_p:0.9, repetition_penalty:1.05 });
+      const full = Array.isArray(out) ? out[0].generated_text : String(out);
+      return full.split("Assistant:").pop().trim();
+    } catch(e){
+      console.error(e);
+      return "⚠️ Erreur pendant la génération. Réessaie.";
+    }
+  }
+
+  // ---- events ----
+  el.toggle.addEventListener('click', open);
+  el.close.addEventListener('click', close);
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && !el.win.hidden) close(); });
+
+  el.form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const q = el.input.value.trim();
+    if(!q) return;
+    el.input.value='';
+    el.send.disabled = true;
+
+    push(q,'user');
+    const typing = push('…','bot','itbot-typing');
+    const a = await aiAnswer(q);
+    typing.remove();
+    push(a,'bot');
+    el.send.disabled = false;
+  });
+
+  el.chips.forEach(ch => ch.addEventListener('click', ()=>{
+    el.input.value = ch.textContent.trim();
+    el.form.requestSubmit();
+  }));
+})();
+</script>
 
 </body>
 </html>
+
 
 
