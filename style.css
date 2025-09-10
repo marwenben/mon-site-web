@@ -712,6 +712,15 @@ const close = () => {
   #itbot-messages { font-size: 1.05rem; }
   .itbot-msg { max-width: 100%; }
 }
+@media (max-width: 480px){
+  .itbot-chip{
+    padding: 5px 8px;
+    font-size: .82rem;
+    line-height: 1.2;
+  }
+  .itbot-suggestions{ gap:6px; }
+}
+
 
 
 
