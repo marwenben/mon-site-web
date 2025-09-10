@@ -262,6 +262,8 @@
       <button class="itbot-chip">Le VPN ne se connecte pas</button>
       <button class="itbot-chip">Outlook ne synchronise pas</button>
       <button class="itbot-chip">Teams caméra/micro</button>
+      <button class="itbot-chip">Espace disque plein</button>
+      <button class="itbot-chip">Rapport Wi-Fi (wlanreport)</button>
     </div>
 
     <form id="itbot-form" autocomplete="off">
@@ -454,9 +456,9 @@ net start bits`
    sfc /scannow
 4) Redémarrer le PC après la réparation`
     },
-    {
-      re: /wlanreport|rapport wifi|wifi report|diagnostic wifi/i,
-      ans:
+  {
+  re: /wlanreport|rapport ?wi-?fi|wifi report|diagnostic wifi/i,
+  ans:
 `📊 **Rapport détaillé Wi-Fi**
 1) CMD (Admin) :
    netsh wlan show wlanreport
@@ -464,7 +466,7 @@ net start bits`
    C:\\ProgramData\\Microsoft\\Windows\\WlanReport\\wlan-report-latest.html
 3) Le rapport montre :
    déconnexions/erreurs, historique, adaptateurs`
-    }
+}
   ];
 
 
@@ -599,6 +601,7 @@ Réseau: \\\\serveur\\Nom ou IP (TCP/IP)`},
 
 </body>
 </html>
+
 
 
 
