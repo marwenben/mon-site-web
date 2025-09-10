@@ -262,8 +262,9 @@
       <button class="itbot-chip">Le VPN ne se connecte pas</button>
       <button class="itbot-chip">Outlook ne synchronise pas</button>
       <button class="itbot-chip">Teams caméra/micro</button>
-      <button class="itbot-chip">Espace disque plein</button>
-      <button class="itbot-chip">Rapport Wi-Fi (wlanreport)</button>
+      <button class="itbot-chip" data-q="disque plein">Espace disque plein</button>
+      <button class="itbot-chip" data-q="wlanreport">Rapport Wi-Fi (wlanreport)</button>
+
     </div>
 
     <form id="itbot-form" autocomplete="off">
@@ -341,126 +342,14 @@
     chips:  document.querySelectorAll('.itbot-chip'),
   };
 
-  /* ===== KB — Réponses instantanées ===== */
-  const KB = [
-    {
-      re: /wifi|wi-?fi|internet|reseau|réseau|connexion|connecter/i,
-      ans:
-`💡 **Wi-Fi (Windows)**
-1) Win+A → **Mode avion OFF**
-2) Paramètres → **Réseau & Internet > Wi-Fi** → Wi-Fi **ON**
-3) **Oublier** le réseau puis se reconnecter
-4) CMD (Admin) :
-netsh winsock reset
-ipconfig /flushdns
-ipconfig /release
-ipconfig /renew
-5) Redémarrer **PC** et **routeur**`
-    },
-    {
-      re: /ethernet|cable|câble|lan/i,
-      ans:
-`🔌 **Ethernet**
-- Tester autre câble/port
-- Paramètres → Réseau → Ethernet → Désactiver/Activer
-- CMD (Admin) :
-netsh int ip reset
-netsh advfirewall reset`
-    },
-    {
-      re: /vpn|forti|anyconnect|globalprotect|openvpn|wireguard/i,
-      ans:
-`🌐 **VPN**
-- Vérifier **identifiants + MFA**
-- **Date/heure** système correctes
-- Essayer un autre réseau (partage 4G)
-- Quitter/relancer l’app VPN ou redémarrer
-- Vérifier **Proxy** : Paramètres > Réseau > Proxy **OFF** (si non requis)`
-    },
-    {
-      re: /imprim/i,
-      ans:
-`🖨️ **Imprimante réseau**
-1) Paramètres → **Bluetooth & appareils > Imprimantes & scanners** → **Ajouter**
-2) Entrer **\\\\SERVEUR\\Nom** ou **IP TCP/IP**
-3) Installer **pilote constructeur** si demandé
-4) Si file d’attente bloquée :
-net stop spooler
-del /q /f %systemroot%\\System32\\spool\\PRINTERS\\*.*
-net start spooler`
-    },
-    {
-      re: /outlook|courriel|mail|exchange/i,
-      ans:
-`📧 **Outlook**
-- Fichier → Paramètres du compte → **Réparer**
-- Nouveau **profil** (Panneau de config → Courrier → Profils)
-- Réindexer la recherche (Options d’indexation → **Reconstruire**)
-- Réinitialiser volet :
-outlook.exe /resetnavpane`
-    },
-    {
-      re: /teams|cam(é|e)ra|micro|microphone|audio|video/i,
-      ans:
-`🎥 **Teams (caméra/micro)**
-- Paramètres Teams → **Périphériques** (choisir micro/caméra)
-- Quitter complètement (icône > clic droit > **Quitter**)
-- Vider cache : %appdata%\\Microsoft\\Teams\\Cache
-- Tester dans **Paramètres Windows > Système > Son**`
-    },
-    {
-      re: /ad\b|active ?directory|mot ?de ?passe|password|verrouill/i,
-      ans:
-`🔐 **Mot de passe AD**
-- **Ctrl+Alt+Suppr** → **Modifier le mot de passe**
-- Complexité : 12+ caractères, maj/min/chiffre/symbole
-- PC hors domaine : connecter le **VPN**`
-    },
-    {
-      re: /disque|espace|storage|plein/i,
-      ans:
-`💽 **Espace disque**
-- Nettoyage de disque (cleanmgr)
-- Désinstaller apps inutiles
-- Vider : %temp% et C:\\Windows\\Temp`
-    },
-    {
-      re: /mise ?à ?jour|windows update|maj/i,
-      ans:
-`⬆️ **Windows Update**
-- Paramètres → Mise à jour → **Rechercher**
-- Réinitialiser services :
-net stop wuauserv
-net stop bits
-del /q /f %systemroot%\\SoftwareDistribution\\*.*
-net start wuauserv
-net start bits`
-    },
-    {
-      re: /nav(igateur)?|chrome|edge|firefox|internet/i,
-      ans:
-`🌐 **Navigateur**
-- Vider cache/cookies
-- Tester en **navigation privée**
-- Désactiver extensions suspectes`
-    },
-    {
-      re: /dism|sfc|integrité|corruption|réparer windows|repair windows/i,
-      ans:
-`🛠️ **Réparer l’image Windows (DISM + SFC)**
-1) Ouvrir **Invite de commandes (Admin)**
-2) Vérifier / réparer l’image :
-   dism /online /cleanup-image /scanhealth
-   dism /online /cleanup-image /restorehealth
-3) Vérifier l’intégrité des fichiers :
-   sfc /scannow
-4) Redémarrer le PC après la réparation`
-    },
+      /* ===== KB — Réponses instantanées ===== */
+const KB = [
+  // 1) Mettre le "wlanreport" tout en haut pour qu'il passe AVANT la règle Wi-Fi générique
   {
-  // capte : "wlanreport", "rapport Wi-Fi", "rapport wifi", "wifi report", "diagnostic wifi"
-  // gère les tirets Unicode (‐-–—) et les espaces classiques/insécables
-  re: /wlanreport|rapport\s*wi[\-\u2011\u2013\u2014]?\s*fi|rapport\s*wifi|wifi\s*report|diagnostic\s*wi[\-\u2011\u2013\u2014]?\s*fi/i,
-  ans:
+    // capte : "wlanreport", "rapport Wi-Fi", "rapport wifi", "wifi report", "diagnostic wifi"
+    // gère les tirets Unicode (‐ – —) et les espaces divers
+    re: /wlanreport|rapport\s*wi[\-\u2011\u2013\u2014]?\s*fi|rapport\s*wifi|wifi\s*report|diagnostic\s*wi[\-\u2011\u2013\u2014]?\s*fi/i,
+    ans:
 `📊 **Rapport détaillé Wi-Fi**
 1) Ouvrir **Invite de commandes (Admin)**
 2) Lancer :
@@ -471,8 +360,129 @@ net start bits`
    - Déconnexions / erreurs
    - Historique des connexions
    - Infos des adaptateurs`
-}
-  ];
+  },
+
+  // 2) Tu peux aussi garder DISM/SFC haut dans la liste
+  {
+    re: /dism|sfc|integrité|corruption|réparer windows|repair windows/i,
+    ans:
+`🛠️ **Réparer l’image Windows (DISM + SFC)**
+1) Ouvrir **Invite de commandes (Admin)**
+2) Vérifier / réparer l’image :
+   dism /online /cleanup-image /scanhealth
+   dism /online /cleanup-image /restorehealth
+3) Vérifier l’intégrité des fichiers :
+   sfc /scannow
+4) Redémarrer le PC après la réparation`
+  },
+
+  // 3) Règle Wi-Fi générique (placée APRÈS pour ne pas "manger" wlanreport)
+  {
+    re: /wifi|wi-?fi|internet|reseau|réseau|connexion|connecter/i,
+    ans:
+`💡 **Wi-Fi (Windows)**
+1) Win+A → **Mode avion OFF**
+2) Paramètres → **Réseau & Internet > Wi-Fi** → Wi-Fi **ON**
+3) **Oublier** le réseau puis se reconnecter
+4) CMD (Admin) :
+netsh winsock reset
+ipconfig /flushdns
+ipconfig /release
+ipconfig /renew
+5) Redémarrer **PC** et **routeur**`
+  },
+
+  // ——— Les autres règles inchangées ———
+  {
+    re: /ethernet|cable|câble|lan/i,
+    ans:
+`🔌 **Ethernet**
+- Tester autre câble/port
+- Paramètres → Réseau → Ethernet → Désactiver/Activer
+- CMD (Admin) :
+netsh int ip reset
+netsh advfirewall reset`
+  },
+  {
+    re: /vpn|forti|anyconnect|globalprotect|openvpn|wireguard/i,
+    ans:
+`🌐 **VPN**
+- Vérifier **identifiants + MFA**
+- **Date/heure** système correctes
+- Essayer un autre réseau (partage 4G)
+- Quitter/relancer l’app VPN ou redémarrer
+- Vérifier **Proxy** : Paramètres > Réseau > Proxy **OFF** (si non requis)`
+  },
+  {
+    re: /imprim/i,
+    ans:
+`🖨️ **Imprimante réseau**
+1) Paramètres → **Bluetooth & appareils > Imprimantes & scanners** → **Ajouter**
+2) Entrer **\\\\SERVEUR\\Nom** ou **IP TCP/IP**
+3) Installer **pilote constructeur** si demandé
+4) Si file d’attente bloquée :
+net stop spooler
+del /q /f %systemroot%\\System32\\spool\\PRINTERS\\*.*
+net start spooler`
+  },
+  {
+    re: /outlook|courriel|mail|exchange/i,
+    ans:
+`📧 **Outlook**
+- Fichier → Paramètres du compte → **Réparer**
+- Nouveau **profil** (Panneau de config → Courrier → Profils)
+- Réindexer la recherche (Options d’indexation → **Reconstruire**)
+- Réinitialiser volet :
+outlook.exe /resetnavpane`
+  },
+  {
+    re: /teams|cam(é|e)ra|micro|microphone|audio|video/i,
+    ans:
+`🎥 **Teams (caméra/micro)**
+- Paramètres Teams → **Périphériques** (choisir micro/caméra)
+- Quitter complètement (icône > clic droit > **Quitter**)
+- Vider cache : %appdata%\\Microsoft\\Teams\\Cache
+- Tester dans **Paramètres Windows > Système > Son**`
+  },
+  {
+    re: /ad\b|active ?directory|mot ?de ?passe|password|verrouill/i,
+    ans:
+`🔐 **Mot de passe AD**
+- **Ctrl+Alt+Suppr** → **Modifier le mot de passe**
+- Complexité : 12+ caractères, maj/min/chiffre/symbole
+- PC hors domaine : connecter le **VPN**`
+  },
+  {
+    re: /disque|espace|storage|plein/i,
+    ans:
+`💽 **Espace disque**
+- Nettoyage de disque (cleanmgr)
+- Désinstaller apps inutiles
+- Vider : %temp% et C:\\Windows\\Temp`
+  },
+  {
+    re: /mise ?à ?jour|windows update|maj/i,
+    ans:
+`⬆️ **Windows Update**
+- Paramètres → Mise à jour → **Rechercher**
+- Réinitialiser services :
+net stop wuauserv
+net stop bits
+del /q /f %systemroot%\\SoftwareDistribution\\*.*
+net start wuauserv
+net start bits`
+  },
+  {
+    re: /nav(igateur)?|chrome|edge|firefox|internet/i,
+    ans:
+`🌐 **Navigateur**
+- Vider cache/cookies
+- Tester en **navigation privée**
+- Désactiver extensions suspectes`
+  }
+];
+
+   
 
 
   // Renvoie une réponse immédiate si un motif de la KB matche
@@ -597,15 +607,16 @@ Réseau: \\\\serveur\\Nom ou IP (TCP/IP)`},
     el.send.disabled = false;
   });
 
-  el.chips.forEach(ch => ch.addEventListener('click', ()=>{
-    el.input.value = ch.textContent.trim();
-    el.form.requestSubmit();
-  }));
-})();
+el.chips.forEach(ch => ch.addEventListener('click', ()=>{
+  const q = ch.dataset.q || ch.textContent.trim();
+  el.input.value = q;
+  el.form.requestSubmit();
+}));
 </script>
 
 </body>
 </html>
+
 
 
 
