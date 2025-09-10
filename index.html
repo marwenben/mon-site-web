@@ -457,15 +457,20 @@ net start bits`
 4) Redémarrer le PC après la réparation`
     },
   {
-  re: /wlanreport|rapport ?wi-?fi|wifi report|diagnostic wifi/i,
+  // capte : "wlanreport", "rapport Wi-Fi", "rapport wifi", "wifi report", "diagnostic wifi"
+  // gère les tirets Unicode (‐-–—) et les espaces classiques/insécables
+  re: /wlanreport|rapport\s*wi[\-\u2011\u2013\u2014]?\s*fi|rapport\s*wifi|wifi\s*report|diagnostic\s*wi[\-\u2011\u2013\u2014]?\s*fi/i,
   ans:
 `📊 **Rapport détaillé Wi-Fi**
-1) CMD (Admin) :
+1) Ouvrir **Invite de commandes (Admin)**
+2) Lancer :
    netsh wlan show wlanreport
-2) Ouvrir :
+3) Ouvrir le fichier :
    C:\\ProgramData\\Microsoft\\Windows\\WlanReport\\wlan-report-latest.html
-3) Le rapport montre :
-   déconnexions/erreurs, historique, adaptateurs`
+4) Le rapport affiche :
+   - Déconnexions / erreurs
+   - Historique des connexions
+   - Infos des adaptateurs`
 }
   ];
 
@@ -601,6 +606,7 @@ Réseau: \\\\serveur\\Nom ou IP (TCP/IP)`},
 
 </body>
 </html>
+
 
 
 
