@@ -696,6 +696,23 @@ const close = () => {
 
 /* S'assure que la fenêtre passe au-dessus de tout */
 #itbot-root { z-index: 999999; }
+/* === Correctifs d'affichage des messages du chatbot === */
+.itbot-msg {
+  max-height: none !important;     /* enlève la limite */
+  overflow: visible !important;    /* pas de mini-scroll */
+  font-size: 1rem;                 /* texte un peu plus grand */
+  line-height: 1.5;
+  white-space: pre-wrap;           /* garde les retours à la ligne */
+  word-break: break-word;          /* coupe les mots/URL trop longs */
+}
+
+/* Sur mobile : messages pleine largeur + meilleure lisibilité */
+@media (max-width: 480px) {
+  #itbot-window { max-height: 82dvh; }
+  #itbot-messages { font-size: 1.05rem; }
+  .itbot-msg { max-width: 100%; }
+}
+
 
 
 
