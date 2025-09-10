@@ -646,5 +646,56 @@ const close = () => {
 /* (optionnel) Ajuste l'icône / fallback emoji du bouton */
 #itbot-toggle i { font-size: 20px; }
 #itbot-toggle .itbot-fallback { font-size: 22px; line-height: 1; }
+/* Améliorations générales pour le tactile */
+#itbot-root, #itbot-window, .itbot-chip, .itbot-badge, #itbot-send {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+#itbot-messages {
+  -webkit-overflow-scrolling: touch; /* inertie iOS */
+}
+
+/* Utiliser la hauteur dynamique (barres du navigateur) */
+#itbot-window {
+  max-height: 75dvh; /* meilleur que 70vh sur mobile */
+}
+
+/* Respect des encoches / safe areas */
+.itbot-footer, #itbot-form {
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
+}
+
+/* Responsive strict mobile */
+@media (max-width: 480px) {
+  #itbot-window {
+    right: 8px;
+    left: 8px;               /* centré */
+    width: auto;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0));
+    border-radius: 12px;
+    max-height: 80dvh;       /* un peu plus haut sur mobile */
+  }
+
+  .itbot-header { padding: 10px; }
+  #itbot-title { font-size: .95rem; }
+  .itbot-badge { font-size: .7rem; padding: 2px 7px; }
+
+  /* Le champ + bouton restent visibles quand le clavier s’ouvre */
+  #itbot-form {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    z-index: 2;
+  }
+
+  /* Le fil de messages prend tout l’espace restant */
+  #itbot-window { display: flex; flex-direction: column; }
+  #itbot-messages { flex: 1; min-height: 0; }
+}
+
+/* S'assure que la fenêtre passe au-dessus de tout */
+#itbot-root { z-index: 999999; }
+
 
 
