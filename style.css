@@ -721,6 +721,52 @@ const close = () => {
   .itbot-suggestions{ gap:6px; }
 }
 
+/* === Chatbot : bulles lisibles et fluides === */
+.itbot-msg {
+  display: block !important;        /* une bulle par ligne */
+  width: auto !important;
+  max-width: 95% !important;        /* limite souple desktop */
+  max-height: none !important;      /* pas de mini-scroll interne */
+  overflow: visible !important;
+  white-space: pre-wrap !important;  /* garde les retours à la ligne */
+  word-break: break-word !important; /* casse mots/URL trop longs */
+  margin: 6px 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Bot = bulle bleue claire */
+.itbot-bot{
+  background:#e2f2ff !important;
+  border:1px solid #bfdbfe !important;
+  color:#0f172a !important;
+}
+
+/* User = bulle grise */
+.itbot-user{
+  background:#f1f1f1 !important;
+  border:1px solid #d6d6d6 !important;
+  color:#111 !important;
+}
+
+/* Liste des messages = prend tout l'espace restant */
+#itbot-window { display: flex; flex-direction: column; }
+#itbot-messages { flex: 1; min-height: 0; }
+
+/* Badges du header : scroll horizontal si trop nombreux */
+.itbot-subtitle{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile : pleine largeur et taille lisible */
+@media (max-width: 480px){
+  .itbot-msg{ max-width: 100% !important; font-size: 1.05rem; }
+  #itbot-window{ left:8px; right:8px; max-height:82dvh; }
+}
+
 
 
 
